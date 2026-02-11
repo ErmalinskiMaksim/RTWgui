@@ -1,12 +1,11 @@
 #ifdef USE_SDL
 #include "RTWgui/LibraryDependent/Window.h"
-#include <iostream>
 
 Window::Window(std::string_view title, unsigned width, unsigned height)
     : m_window{SDL_CreateWindow(title.data(), width, height, 0), SDL_DestroyWindow}
 {
     if (!m_window) {
-        std::cerr << "Error creating Window: " << SDL_GetError() << std::endl;
+        SDL_Log("Error creating a window: %s", SDL_GetError());
         throw;
     }
 

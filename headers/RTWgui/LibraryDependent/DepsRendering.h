@@ -13,11 +13,13 @@ using Color1    = Uint8;
 using WindowPtrType     = SDL_Window*;
 using RendererPtrType   = SDL_Renderer*;
 using TexturePtrType    = SDL_Texture*;
-using FontPtrType = TTF_Font*;
-using WindowType    = std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)>;
+using SurfacePtrType    = SDL_Surface*;
+using FontPtrType       = TTF_Font*;
+using WindowType    = std::unique_ptr<SDL_Window,   decltype(&SDL_DestroyWindow)>;
 using RendererType  = std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)>;
-using TextureType   = std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)>;
-using FontType = std::unique_ptr<TTF_Font, decltype(&TTF_CloseFont)>;
+using TextureType   = std::unique_ptr<SDL_Texture,  decltype(&SDL_DestroyTexture)>;
+using SurfaceType   = std::unique_ptr<SDL_Surface,  decltype(&SDL_DestroySurface)>;
+using FontType      = std::unique_ptr<TTF_Font,     decltype(&TTF_CloseFont)>;
 
 #elif USE_SFML
 

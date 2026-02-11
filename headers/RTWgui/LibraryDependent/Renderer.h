@@ -21,6 +21,9 @@ public:
 
     void clear() const;
     void present() const;
+
+    void setTarget(TexturePtrType) const;
+    void setTarget() const;
     
 private: 
     mutable RendererType m_renderer;

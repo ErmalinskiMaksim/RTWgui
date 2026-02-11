@@ -1,7 +1,7 @@
 #ifndef FONT_H
 #define FONT_H
 
-#include "RTWgui/LibraryDependent/DepsRendering.h"
+#include "RTWgui/LibraryDependent/Texture.h"
 #include <string_view>
 
 #ifdef USE_SDL
@@ -17,10 +17,10 @@ public:
     float getCharacterWidth() const noexcept;
     float getCharacterHeight() const noexcept;
 private:
-    bool prerenderGlyphAtlas(RendererPtrType);
+    void prerenderGlyphAtlas(RendererPtrType);
 
     FontType m_font;
-    TextureType m_glyphAtlas;
+    Texture m_glyphAtlas;
 };
 #elif USE_SFML
 

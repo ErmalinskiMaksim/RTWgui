@@ -1,13 +1,11 @@
 #include "RTWgui/LibraryDependent/Renderer.h"
 
 #ifdef USE_SDL
-#include <iostream>
-
 Renderer::Renderer(WindowPtrType window) 
     : m_renderer{SDL_CreateRenderer(window, nullptr), SDL_DestroyRenderer}
 {
     if (!m_renderer) {
-        std::cerr << "Error creating Renderer: " << SDL_GetError() << std::endl;
+        SDL_Log("Error creating a renderer: %s", SDL_GetError());
         throw;
     }
 }
@@ -53,7 +51,7 @@ void Renderer::renderText(const Font& font, Rect dest, std::string_view txt) con
 }
 
 void Renderer::renderTexture(TexturePtrType texture, Rect dest) const {
-    SDL_RenderTexture(m_renderer.get(), texture, NULL, &dest);
+    SDL_RenderTexture(m_renderer.get(), texture, nullptr, &dest);
 }
 
 void Renderer::clear() const {
@@ -63,6 +61,14 @@ void Renderer::clear() const {
 
 void Renderer::present() const {
     SDL_RenderPresent(m_renderer.get());
+}
+
+void Renderer::setTarget(TexturePtrType target) const {
+    SDL_SetRenderer(m_renderer.get(), target);
+}
+
+void Renderer::setTarget() const {
+    SDL_SetRenderer(m_renderer.get(), nullptr);
 }
 
 #elif USE_SFML
