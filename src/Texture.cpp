@@ -34,8 +34,12 @@ Texture::Texture(RendererPtrType renderer, SurfacePtrType surf)
     }
 }
 
-TexturePtrType Texture::get() const {
+TexturePtrType Texture::get() const noexcept {
     return m_texture.get();
+}
+
+bool Texture::empty() const noexcept {
+    return !m_texture;
 }
 
 #endif

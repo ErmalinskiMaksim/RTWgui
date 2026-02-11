@@ -2,6 +2,7 @@
 #define WIDGET_H
 
 #include <type_traits>
+#include <optional>
 #include "RTWgui/LibraryDependent/Renderer.h"
 
 class Widget;
@@ -30,7 +31,7 @@ public:
            , Color fillColor = {0xFF, 0xFF, 0xFF, 0xFF}
            , Color outlineColor = {0x00, 0x00, 0x00, 0x00}
            , float charWidth = 0.0f, float charHeight = 0.0f
-           );
+        );
 
     constexpr bool contains(float x, float y) const noexcept {
         return (x > m_hitBox.x && x <= m_hitBox.x + m_hitBox.w) 
@@ -50,6 +51,7 @@ public:
     float getCharHeight() const noexcept;
 protected:
     // absolute coordinates
+    Texture m_texture;
     Rect m_hitBox; 
     Color m_fillColor;
     Color m_outlineColor;

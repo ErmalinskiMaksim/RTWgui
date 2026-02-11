@@ -13,22 +13,31 @@ Color::operator Color4() const noexcept {
     return Color4(r, g, b, a);
 }
 
-Widget::Widget(Rect&& hitBox, Color fillColor, Color outlineColor, float charWidth, float charHeight) 
-    : m_hitBox(hitBox)
-      , m_fillColor(fillColor)
-      , m_outlineColor(outlineColor)
-      , m_charWidth(charWidth)
-      , m_charHeight(charHeight)
+Widget::Widget(Rect&& hitBox, Color fillColor, Color outlineColor
+            , float charWidth, float charHeight) 
+    : m_texture{}
+    , m_hitBox(hitBox)
+    , m_fillColor(fillColor)
+    , m_outlineColor(outlineColor)
+    , m_charWidth(charWidth)
+    , m_charHeight(charHeight)
 {}
 
-// constexpr bool Widget::contains(float x, float y) const noexcept {
-//     return (x > m_hitBox.x && x <= m_hitBox.x + m_hitBox.w) 
-//         && (y > m_hitBox.y && y <= m_hitBox.y + m_hitBox.h);
-// }
-
 void Widget::render(const Renderer& renderer, const Font&) const noexcept {
-    renderer.renderFillRect(&m_hitBox, m_fillColor);
-    renderer.renderRect(&m_hitBox, m_outlineColor);
+    if (m_texture.empty()) [[unlikely]] {
+        Rect textureRect = { 0.0f, 0.0f, m_hitBox.w, m_hitBox.h };
+        Texture upToDateTexture{renderer.get(), static_cast<int>(textureRect.w), static_cast<int()>textureRect.h)};
+
+        renderer.setTarget(upToDateTexture.get());
+        renderer.clear();
+        renderer.renderFillRect(&textureRect, m_fillColor);
+        renderer.renderRect(&textureRect, m_outlineColor);
+        renderer.setTarget();
+
+        std::swap(m_texture, upToDateTexture);
+    }
+
+    renderer.renderTexture(m_texture.get(), &m_hitbox);
 }
 
 Rect Widget::getHitBox() const noexcept {

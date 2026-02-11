@@ -9,7 +9,8 @@ public:
     Texture();
     Texture(RendererPtrType, float, float);
     Texture(RendererPtrType, SurfacePtrType);
-    TexturePtrType get() const;
+    TexturePtrType get() const noexcept;
+    bool empty() const noexcept;
 private:
     TextureType m_texture;
 };
