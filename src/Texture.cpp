@@ -12,8 +12,8 @@ Texture::Texture(RendererPtrType renderer, float width, float height)
             renderer,
             SDL_PIXELFORMAT_RGBA8888,
             SDL_TEXTUREACCESS_TARGET,
-            width,
-            height)
+            static_cast<int>(width),
+            static_cast<int>(height))
     , SDL_DestroyTexture}
 {
     if (!m_texture) {
