@@ -64,11 +64,11 @@ void Renderer::present() const {
 }
 
 void Renderer::setTarget(TexturePtrType target) const {
-    SDL_SetRenderer(m_renderer.get(), target);
+    SDL_SetRendererTarget(m_renderer.get(), target);
 }
 
 void Renderer::setTarget() const {
-    SDL_SetRenderer(m_renderer.get(), nullptr);
+    SDL_SetRendererTarget(m_renderer.get(), nullptr);
 }
 
 #elif USE_SFML
