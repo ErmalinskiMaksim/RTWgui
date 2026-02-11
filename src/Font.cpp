@@ -27,7 +27,10 @@ void Font::prerenderGlyphAtlas(RendererPtrType renderer) {
         TTF_RenderText_Blended(m_font.get(), atlas, 0, {0x00, 0x00, 0x00, 0xff}),
         SDL_DestroySurface
     };
-    if(!textSurf) return false;
+    if(!textSurf) {
+        SDL_Log("Error creating a glyph atlas surface: %s", SDL_GetError());
+        throw;
+    }
 
     Texture glyphAtlas{renderer, textSurf.get()};
     std::swap(m_glyphAtlas, glyphAtlas);
@@ -38,11 +41,11 @@ TexturePtrType Font::getGlyphAtlas() const noexcept {
 }
 
 float Font::getCharacterWidth() const noexcept {
-    return (m_glyphAtlas) ? static_cast<float>(m_glyphAtlas->w) / 95 : 0.0f;
+    return (m_glyphAtlas) ? static_cast<float>(m_glyphAtlas.get()->w) / 95 : 0.0f;
 }
 
 float Font::getCharacterHeight() const noexcept {
-    return (m_glyphAtlas) ? static_cast<float>(m_glyphAtlas->h) : 0.0f; 
+    return (m_glyphAtlas) ? static_cast<float>(m_glyphAtlas.get()->h) : 0.0f; 
 }
 
 #elif USE_SFML
