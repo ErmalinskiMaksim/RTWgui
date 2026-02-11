@@ -26,7 +26,7 @@ Widget::Widget(Rect&& hitBox, Color fillColor, Color outlineColor
 void Widget::render(const Renderer& renderer, const Font&) const noexcept {
     if (m_texture.empty()) [[unlikely]] {
         Rect textureRect = { 0.0f, 0.0f, m_hitBox.w, m_hitBox.h };
-        Texture upToDateTexture{renderer.get(), static_cast<int>(textureRect.w), static_cast<int()>textureRect.h)};
+        Texture upToDateTexture{renderer.get(), static_cast<int>(textureRect.w), static_cast<int>(textureRect.h)};
 
         renderer.setTarget(upToDateTexture.get());
         renderer.clear();
