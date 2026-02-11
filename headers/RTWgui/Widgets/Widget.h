@@ -51,7 +51,7 @@ public:
     float getCharHeight() const noexcept;
 protected:
     // absolute coordinates
-    Texture m_texture;
+    mutable Texture m_texture;
     Rect m_hitBox; 
     Color m_fillColor;
     Color m_outlineColor;
