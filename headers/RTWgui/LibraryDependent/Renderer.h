@@ -19,7 +19,7 @@ public:
     void renderText(const Font&, Rect, std::string_view) const;
     void renderTexture(TexturePtrType, const Rect*) const;
 
-    void clear() const;
+    void clear(Color4) const;
     void present() const;
 
     void setTarget(TexturePtrType) const;
@@ -52,7 +52,7 @@ public:
     void renderRect(const Rect* const, Color4) const;    
     void renderText(const Font&, Rect, std::string_view) const;
 
-    void clear(Color4) const;
+    void clear() const;
     void present() const;
     
 private: 
