@@ -2,7 +2,6 @@
 #define WIDGET_H
 
 #include <type_traits>
-#include <optional>
 #include "RTWgui/LibraryDependent/Renderer.h"
 
 class Widget;
