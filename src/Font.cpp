@@ -41,11 +41,11 @@ TexturePtrType Font::getGlyphAtlas() const noexcept {
 }
 
 float Font::getCharacterWidth() const noexcept {
-    return (static_cast<bool>(m_glyphAtlas)) ? static_cast<float>(m_glyphAtlas.get()->w) / 95 : 0.0f;
+    return (static_cast<bool>(m_glyphAtlas.get())) ? static_cast<float>(m_glyphAtlas.get()->w) / 95 : 0.0f;
 }
 
 float Font::getCharacterHeight() const noexcept {
-    return (static_cast<bool>(m_glyphAtlas)) ? static_cast<float>(m_glyphAtlas.get()->h) : 0.0f; 
+    return (static_cast<bool>(m_glyphAtlas.get())) ? static_cast<float>(m_glyphAtlas.get()->h) : 0.0f; 
 }
 
 #elif USE_SFML
