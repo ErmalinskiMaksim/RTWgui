@@ -4,7 +4,7 @@
 #include "RTWgui/Pos.h"
 
 TableWidget::TableWidget(Widget&& widget, size_t cols, size_t rows) 
-    : Widget(widget)
+    : Widget(std::move(widget))
     , m_cols{ Labels(cols, {m_hitBox.w/static_cast<float>(cols), {'\0', '\0', '\0', '\0'}})
             , Points(cols*2+3)
             , Rect{m_hitBox.x + m_hitBox.w*0.05f, m_hitBox.y, m_hitBox.w*0.95f, m_hitBox.h*0.05f}
