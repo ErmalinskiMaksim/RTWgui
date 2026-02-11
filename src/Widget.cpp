@@ -37,7 +37,7 @@ void Widget::render(const Renderer& renderer, const Font&) const noexcept {
         std::swap(m_texture, upToDateTexture);
     }
 
-    renderer.renderTexture(m_texture.get(), &m_hitbox);
+    renderer.renderTexture(m_texture.get(), &m_hitBox);
 }
 
 Rect Widget::getHitBox() const noexcept {
