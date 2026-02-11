@@ -24,7 +24,7 @@ Texture::Texture(RendererPtrType renderer, float width, float height)
 
 Texture::Texture(RendererPtrType renderer, SurfacePtrType surf) 
     : m_texture{
-        SDL_CreateTextureFromSurface(renderer, surf.get())
+        SDL_CreateTextureFromSurface(renderer, surf)
         , SDL_DestroyTexture
     }
 {
