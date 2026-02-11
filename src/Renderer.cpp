@@ -54,8 +54,8 @@ void Renderer::renderTexture(TexturePtrType texture, const Rect* dest) const {
     SDL_RenderTexture(m_renderer.get(), texture, nullptr, dest);
 }
 
-void Renderer::clear() const {
-    SDL_SetRenderDrawColor(m_renderer.get(), 0xFF, 0xFF, 0xFF, 0xFF);
+void Renderer::clear(Color4 c) const {
+    SDL_SetRenderDrawColor(m_renderer.get(), c.r, c.g, c.b, c.a);
     SDL_RenderClear(m_renderer.get());
 }
 

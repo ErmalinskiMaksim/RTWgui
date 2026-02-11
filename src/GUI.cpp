@@ -150,7 +150,7 @@ bool GUI::processRequests() {
 
 void GUI::draw() const {
     // draw main background
-    m_renderer.clear(); 
+    m_renderer.clear(Color4{0xFF, 0xFF, 0xFF, 0xFF}); 
     // let all the layers draw themselves in the down->top order
     for(auto&& layer : m_layers)
         layer->draw(m_renderer, m_mainFont);

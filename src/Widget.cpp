@@ -29,7 +29,7 @@ void Widget::render(const Renderer& renderer, const Font&) const noexcept {
         Texture upToDateTexture{renderer.get(), textureRect.w, textureRect.h};
 
         renderer.setTarget(upToDateTexture.get());
-        renderer.clear();
+        renderer.clear(Color4{});
         renderer.renderFillRect(&textureRect, m_fillColor);
         renderer.renderRect(&textureRect, m_outlineColor);
         renderer.setTarget();

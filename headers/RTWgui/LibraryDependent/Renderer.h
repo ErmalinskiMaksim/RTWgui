@@ -52,7 +52,7 @@ public:
     void renderRect(const Rect* const, Color4) const;    
     void renderText(const Font&, Rect, std::string_view) const;
 
-    void clear() const;
+    void clear(Color4) const;
     void present() const;
     
 private: 
