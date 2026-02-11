@@ -52,6 +52,10 @@ void Renderer::renderText(const Font& font, Rect dest, std::string_view txt) con
     }
 }
 
+void Renderer::renderTexture(TexturePtrType texture, Rect dest) const {
+    SDL_RenderTexture(m_renderer.get(), texture, NULL, &dest);
+}
+
 void Renderer::clear() const {
     SDL_SetRenderDrawColor(m_renderer.get(), 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(m_renderer.get());
