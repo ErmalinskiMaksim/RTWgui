@@ -30,7 +30,7 @@ if (GUI_ENABLE_LTO)
 endif()
 
 target_compile_options(RTWgui PRIVATE
-    $<$<CONFIG:DEBUG>:
+    $<$<CONFIG:Debug>:
         -O0
         -g3
         -ggdb3
@@ -43,11 +43,11 @@ target_compile_options(RTWgui PRIVATE
 )
 
 target_compile_definitions(RTWgui PRIVATE
-    $<$<CONFIG:DEBUG>:DEBUG>
+    $<$<CONFIG:Debug>:DEBUG>
 )
 
 target_compile_options(RTWgui PRIVATE
-    $<$<CONFIG:RELEASE>:
+    $<$<CONFIG:Release>:
         -O3
     >
 )
