@@ -20,12 +20,20 @@ if (GRAPHICS_LIBRARY STREQUAL "SDL")
         GIT_TAG        main
     )
 
-    FetchContent_MakeAvailable(sdl3 sdl3_ttf)
+    # --- SDL3_IMAGE ---
+    FetchContent_Declare(
+        sdl3_image
+        GIT_REPOSITORY https://github.com/libsdl-org/SDL_image.git
+        GIT_TAG        main          
+    )
+
+    FetchContent_MakeAvailable(sdl3 sdl3_ttf sdl3_image)
 
     target_link_libraries(RTWgui
         PUBLIC
             SDL3::SDL3
             SDL3_ttf::SDL3_ttf
+            SDL3_image::SDL3_image
     )
 
     target_compile_definitions(RTWgui

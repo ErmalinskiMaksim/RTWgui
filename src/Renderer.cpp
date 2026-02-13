@@ -50,8 +50,8 @@ void Renderer::renderText(const Font& font, Rect dest, std::string_view txt) con
     }
 }
 
-void Renderer::renderTexture(TexturePtrType texture, const Rect* dest) const {
-    SDL_RenderTexture(m_renderer.get(), texture, nullptr, dest);
+void Renderer::renderTexture(TexturePtrType texture, const Rect* src, const Rect* dest) const {
+    SDL_RenderTexture(m_renderer.get(), texture, src, dest);
 }
 
 void Renderer::clear(Color4 c) const {

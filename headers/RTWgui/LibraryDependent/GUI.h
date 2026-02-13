@@ -30,7 +30,8 @@ public:
     static bool init() {
         #ifdef USE_SDL 
             constexpr SDL_InitFlags SDL_FLAGS = SDL_INIT_VIDEO;         
-            return SDL_Init(SDL_FLAGS) && TTF_Init();
+            constexpr auto SDL_IMG_FLAGS = IMG_INIT_PNG;
+            return SDL_Init(SDL_FLAGS) && TTF_Init() && ((IMG_Init(SDL_IMG_FLAGS) & SDL_IMG_FLAGS));
         #elif USE_SFML 
             return true;  
         #else
@@ -47,6 +48,7 @@ private:
     
     static void deinit() {
         #ifdef USE_SDL
+            IMG_Quit();
             TTF_Quit();
             SDL_Quit();
         #endif

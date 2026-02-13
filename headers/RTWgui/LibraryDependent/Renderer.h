@@ -17,7 +17,7 @@ public:
     void renderFillRect(const Rect* const, Color4) const;
     void renderRect(const Rect* const, Color4) const;    
     void renderText(const Font&, Rect, std::string_view) const;
-    void renderTexture(TexturePtrType, const Rect*) const;
+    void renderTexture(TexturePtrType, const Rect*, const Rect*) const;
 
     void clear(Color4) const;
     void present() const;

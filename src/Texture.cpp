@@ -34,6 +34,22 @@ Texture::Texture(RendererPtrType renderer, SurfacePtrType surf)
     }
 }
 
+Texture::Texture(RendererPtrType renderer, std::string_view path)
+    : m_texture{nullptr, SDL_DestroyTexture}
+{
+    SurfaceType loadedSurface = {IMG_Load(path.data()), SDL_DestroySurface };
+    if (!loadedSurface) {
+        SDL_Log("IMG_Load failed: %s", IMG_GetError());
+        throw;
+    }
+
+    m_texture.reset(SDL_CreateTextureFromSurface(renderer, loadedSurface.get()));
+    if (!m_texture) {
+        SDL_Log("CreateTexture failed: %s", SDL_GetError());
+        throw;
+    }
+}
+
 TexturePtrType Texture::get() const noexcept {
     return m_texture.get();
 }
