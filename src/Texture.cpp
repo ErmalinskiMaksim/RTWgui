@@ -39,7 +39,7 @@ Texture::Texture(RendererPtrType renderer, std::string_view path)
 {
     SurfaceType loadedSurface = {IMG_Load(path.data()), SDL_DestroySurface };
     if (!loadedSurface) {
-        SDL_Log("IMG_Load failed: %s", IMG_GetError());
+        SDL_Log("IMG_Load failed: %s", SDL_GetError());
         throw;
     }
 
