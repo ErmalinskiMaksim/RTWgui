@@ -3,6 +3,7 @@
 
 #ifdef USE_SDL
 #include "SDL3_ttf/SDL_ttf.h"
+#include "SDL3_image/SDL_image.h"
 #include <memory>
 
 using Rect      = SDL_FRect;
