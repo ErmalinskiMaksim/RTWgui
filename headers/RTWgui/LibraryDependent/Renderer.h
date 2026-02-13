@@ -24,6 +24,9 @@ public:
 
     void setTarget(TexturePtrType) const;
     void setTarget() const;
+
+    void setBlendMode() const;
+    void resetBlendMode() const;
     
 private: 
     mutable RendererType m_renderer;

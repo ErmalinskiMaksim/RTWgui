@@ -71,6 +71,14 @@ void Renderer::setTarget() const {
     SDL_SetRenderTarget(m_renderer.get(), nullptr);
 }
 
+void Renderer::setBlendMode() const {
+    SDL_SetRenderDrawBlendMode(m_renderer.get(), SDL_BLENDMODE_BLEND);
+}
+
+void Renderer::resetBlendMode() const {
+    SDL_SetRenderDrawBlendMode(m_renderer.get(), SDL_BLENDMODE_NONE);
+}
+
 #elif USE_SFML
 
 Rect::operator FRect() const noexcept {

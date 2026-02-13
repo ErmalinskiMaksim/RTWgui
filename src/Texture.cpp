@@ -58,4 +58,12 @@ bool Texture::empty() const noexcept {
     return !m_texture;
 }
 
+void Texture::setBlendMode() noexcept {
+    SDL_SetTextureBlendMode(m_texture.get(), SDL_BLENDMODE_BLEND);
+}
+
+void Texture::resetBlendMode() noexcept {
+    SDL_SetTextureBlendMode(m_texture.get(), SDL_BLENDMODE_NONE);
+}
+
 #endif
