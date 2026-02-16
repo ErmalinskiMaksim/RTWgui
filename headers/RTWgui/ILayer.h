@@ -15,6 +15,8 @@ class ILayer {
 public:
     // dispatch events passed from GUI
     virtual void dispatchEvents(const LayerEvent&) = 0;
+    // update
+    virtual void update() = 0;
     // draw widgets
     virtual void draw(const Renderer&, const Font&) const = 0;
     // react to responses to requests

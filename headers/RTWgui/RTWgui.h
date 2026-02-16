@@ -17,6 +17,10 @@ private:
         return GUI::get().processEvents();
     }
 
+    static void update() {
+        return GUI::get().update();
+    }
+
     static void display() {
         GUI::get().draw();
     }

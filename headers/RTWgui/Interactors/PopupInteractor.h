@@ -18,6 +18,10 @@ public:
     void dispatchEvents(const LayerEvent& event) {
         std::visit([&](auto&& ev) { processEvents(ev); }, event);
     }
+
+    void update() {
+
+    }
     
     void render(const Renderer& renderer, const Font& font) const {
         auto hbox = r_widget.get().getHitBox();

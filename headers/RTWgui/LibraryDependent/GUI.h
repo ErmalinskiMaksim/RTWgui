@@ -40,6 +40,8 @@ public:
 
     // process application events and dispatch them to layers 
     bool processEvents();
+    // updates application layers 
+    void update();
     // let all the layers draw themselves
     void draw() const;
 private:

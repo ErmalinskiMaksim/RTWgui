@@ -27,6 +27,10 @@ public:
         std::visit([&](auto&& ev) { processEvents(ev); }, event);
     }
 
+    void update() {
+
+    }
+
     void render(const Renderer&, const Font&) const {
         // render button icons 
     }

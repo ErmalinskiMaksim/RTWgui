@@ -25,6 +25,10 @@ public:
         m_interactor.dispatchEvents(event);
     }
 
+    void update() override {
+        m_interactor.update();
+    }
+
     void draw(const Renderer& renderer, const Font& font) const override {
         m_widget.render(renderer, font);
         m_interactor.render(renderer, font);

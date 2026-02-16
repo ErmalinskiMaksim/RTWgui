@@ -148,6 +148,11 @@ bool GUI::processRequests() {
     return false;
 }
 
+void GUI::update() {
+    for (auto&& layer : m_layers)
+        layer->update();
+}
+
 void GUI::draw() const {
     // draw main background
     m_renderer.clear(Color4{0xFF, 0xFF, 0xFF, 0xFF}); 
