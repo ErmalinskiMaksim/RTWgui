@@ -9,7 +9,10 @@ public:
     // main loop 
     static void run() {
         if (!GUI::init()) throw; 
-        while(processEvents()) display();
+        while(processEvents()) {
+            update();
+            display();
+        }
     }
 private:
     // currently supports only gui mode
