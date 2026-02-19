@@ -123,7 +123,7 @@ bool GUI::processRequests() {
                 if (closeReq.resp) 
                     getFocusedLayer()->onResponse(std::move(*closeReq.resp));
             }
-        }, *req);
+        }, std::move(*req));
 
         // true == the layer that was given focus after the destruction of the
         // previous focused layer may want to immediately leave a new requests
