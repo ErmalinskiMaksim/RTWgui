@@ -48,8 +48,6 @@ public:
     Color getOutlineColor() const noexcept;
     float getCharWidth() const noexcept;
     float getCharHeight() const noexcept;
-
-    void setHitBox(Rect&&) noexcept;
 protected:
     // absolute coordinates
     mutable Texture m_texture;

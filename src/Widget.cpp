@@ -60,6 +60,3 @@ float Widget::getCharHeight() const noexcept {
     return m_charHeight;
 }
 
-void Widget::setHitBox(Rect&& rect) noexcept {
-    m_hitBox = std::move(rect);
-}

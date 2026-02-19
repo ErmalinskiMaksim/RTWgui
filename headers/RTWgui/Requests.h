@@ -43,7 +43,7 @@ struct MenuCloseRequest {
 struct DialogCreateRequest {
     struct Payload {
         std::optional<std::string_view> title;
-        std::optional<std::string> initInput;
+        std::optional<std::string_view> initInput;
         uint8_t maxInputLen;
     };
     Widget widget;
