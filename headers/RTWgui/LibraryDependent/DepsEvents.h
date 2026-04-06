@@ -159,7 +159,7 @@ using TextType = const char*;
 #include "SFML/Window/Event.hpp"
 
 using LibEvent = sf::Event;
-inline LibEvent waitEvent(RendererPtrType renderer) {
+inline LibEvent waitEvent(RendererViewType renderer) {
     LibEvent ev;
     renderer->waitEvent(ev);
     return ev;

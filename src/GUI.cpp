@@ -1,31 +1,18 @@
 #include "RTWgui/LibraryDependent/GUI.h"
 // init
-#include "RTWgui/LayerRequestProcessor.h"
 #include "RTWgui/Init.h"
 
 GUI::GUI() : m_layers(MAIN_LAYER_COUNT)
             , m_focusStack{}
             , m_libLT{}
             , m_renderer{WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT}
-#ifdef USE_SDL
-            , m_mainFont{m_renderer.get(), MAIN_FONT_PATH, MAIN_FONT_SZ}
-#elif USE_SFML
-            , m_mainFont{MAIN_FONT_PATH, static_cast<unsigned>(MAIN_FONT_SZ)}
-#endif
+            , m_mainFont{MAIN_FONT_PATH, static_cast<unsigned>(MAIN_FONT_SZ), m_renderer.get()}
 {
     // initialize the layers in the ascending order
     initializeLayers(m_layers, m_mainFont.getCharacterWidth(), m_mainFont.getCharacterHeight());
     // by default the lowest layer has focus
     if (!MAIN_LAYER_COUNT) throw;
     m_focusStack.push(m_layers[0].get());
-}
-
-GUI::~GUI() {
-// #ifdef USE_SDL
-//     // destroy objects for clean lib deinit
-//     m_mainFont.destroy();
-//     m_renderer.destroy();
-// #endif
 }
 
 bool GUI::processEvents() {
@@ -76,7 +63,7 @@ bool GUI::processRequests() {
     auto req = m_focusStack.top()->readRequest();
     if (!req) return false; // no pending requests
     
-    auto status = LayerRequestProcessor::process(&*req);
+    auto status = LayerRequestProcessor::process(&*req, m_layers, m_focusStack);
     switch(status) {
         case LayerRequestProcessor::OperationStatus::LAYER_CREATED: { 
             // XXX REQUEST IS __ MOVED FROM __ AT THIS POINT 
@@ -92,7 +79,7 @@ bool GUI::processRequests() {
                         || std::is_same_v<T, DialogCloseRequest>
                         || std::is_same_v<T, PopupCloseRequest>) {
                     if (closeReq.resp) 
-                        fstack.top()->onResponse(std::move(*closeReq.resp));
+                        m_focusStack.top()->onResponse(std::move(*closeReq.resp));
                 }
             }, std::move(*req));
             // true == the layer that was given focus after the destruction of the

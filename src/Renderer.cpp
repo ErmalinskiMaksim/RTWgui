@@ -20,9 +20,7 @@ Renderer::Renderer(std::string_view windowTitle, unsigned width, unsigned height
 
 }
 
-void Renderer::destroy() {
-    m_renderer.reset();
-    m_window.reset();
+Renderer::~Renderer() {
     SDL_StopTextInput(m_window.get());
 }
 

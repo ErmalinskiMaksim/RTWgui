@@ -9,8 +9,8 @@ public:
     Renderer(std::string_view, unsigned, unsigned);
     Renderer(Renderer&&) = delete;
     Renderer& operator=(Renderer&&) = delete;
+    ~Renderer();
 
-    void destroy();
     RendererPtrType get() const noexcept;
 
     void renderLines(const Point*, int, Color4) const;

@@ -7,11 +7,9 @@
 #ifdef USE_SDL
 class Font {
 public:
-    Font(RendererPtrType, std::string_view, float);
+    Font(std::string_view, unsigned, RendererPtrType);
     Font(Font&&) = delete;
     Font& operator=(Font&&) = delete;
-
-    void destroy();
 
     TexturePtrType getGlyphAtlas() const noexcept;  
     float getCharacterWidth() const noexcept;
@@ -26,7 +24,7 @@ private:
 
 class Font {
 public:
-    Font(std::string_view, unsigned);
+    Font(std::string_view, unsigned, RendererViewType );
 
     float getCharacterWidth() const;
     float getCharacterHeight() const;

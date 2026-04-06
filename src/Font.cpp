@@ -1,8 +1,8 @@
 #include "RTWgui/LibraryDependent/Font.h"
 
 #ifdef USE_SDL
-Font::Font(RendererPtrType renderer, std::string_view path, float fontSz)
-    : m_font{TTF_OpenFont(path.data(), fontSz), TTF_CloseFont}
+Font::Font(std::string_view path, unsigned fontSz, RendererPtrType renderer)
+    : m_font{TTF_OpenFont(path.data(), static_cast<float>(fontSz)), TTF_CloseFont}
     , m_glyphAtlas{}
 {
     if (!m_font) {
@@ -10,10 +10,6 @@ Font::Font(RendererPtrType renderer, std::string_view path, float fontSz)
         throw;
     }
     prerenderGlyphAtlas(renderer);
-}
-
-void Font::destroy() {
-    m_font.reset();
 }
 
 void Font::prerenderGlyphAtlas(RendererPtrType renderer) {
@@ -50,7 +46,7 @@ float Font::getCharacterHeight() const noexcept {
 
 #elif USE_SFML
 #include <iostream>
-Font::Font(std::string_view path, unsigned fontSz)
+Font::Font(std::string_view path, unsigned fontSz, RendererViewType)
     : m_fontSize(fontSz) 
 {
     if (!m_font.loadFromFile(std::string(path))) {

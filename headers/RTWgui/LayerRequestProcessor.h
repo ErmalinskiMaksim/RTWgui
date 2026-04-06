@@ -3,6 +3,7 @@
 
 // layer logic
 #include "RTWgui/ILayer.h"
+#include "RTWgui/Layer.h"
 #include "RTWgui/LayerFocusStack.h"
 
 // interactors

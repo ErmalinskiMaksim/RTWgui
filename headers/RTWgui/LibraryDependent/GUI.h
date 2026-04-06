@@ -4,7 +4,7 @@
 #include "RTWgui/LibraryDependent/LibraryLifetime.h"
 #include "RTWgui/LibraryDependent/Renderer.h"
 #include "RTWgui/LayerFocusStack.h"
-#include <memory>
+#include "RTWgui/LayerRequestProcessor.h"
 
 
 // The main GUI manager class 
@@ -20,7 +20,7 @@ public:
     GUI(GUI&&) = delete;
     GUI& operator=(const GUI&) = delete;
     GUI& operator=(GUI&&) = delete;
-    ~GUI();
+    ~GUI() = default;
 
     static GUI& get() {
         static GUI gui;
