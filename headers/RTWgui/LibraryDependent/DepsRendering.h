@@ -11,7 +11,6 @@ using Point     = SDL_FPoint;
 using Color4    = SDL_Color;
 using Color1    = Uint8;
 
-using WindowPtrType     = SDL_Window*;
 using RendererPtrType   = SDL_Renderer*;
 using TexturePtrType    = SDL_Texture*;
 using SurfacePtrType    = SDL_Surface*;

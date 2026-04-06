@@ -8,7 +8,6 @@ class RTWgui {
 public:
     // main loop 
     static void run() {
-        if (!GUI::init()) throw; 
         while(processEvents()) {
             update();
             display();

@@ -1,19 +1,15 @@
 #include "RTWgui/LibraryDependent/GUI.h"
 // init
+#include "RTWgui/LayerRequestProcessor.h"
 #include "RTWgui/Init.h"
-// interactors
-#include "RTWgui/Interactors/MenuInteractor.h"
-#include "RTWgui/Interactors/DialogInteractor.h"
-#include "RTWgui/Interactors/PopupInteractor.h"
 
 GUI::GUI() : m_layers(MAIN_LAYER_COUNT)
             , m_focusStack{}
+            , m_libLT{}
+            , m_renderer{WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT}
 #ifdef USE_SDL
-            , m_window{WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT}
-            , m_renderer{m_window.get()}
             , m_mainFont{m_renderer.get(), MAIN_FONT_PATH, MAIN_FONT_SZ}
 #elif USE_SFML
-            , m_renderer{WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT}
             , m_mainFont{MAIN_FONT_PATH, static_cast<unsigned>(MAIN_FONT_SZ)}
 #endif
 {
@@ -21,45 +17,20 @@ GUI::GUI() : m_layers(MAIN_LAYER_COUNT)
     initializeLayers(m_layers, m_mainFont.getCharacterWidth(), m_mainFont.getCharacterHeight());
     // by default the lowest layer has focus
     if (!MAIN_LAYER_COUNT) throw;
-    m_focusStack.push_back(m_layers[0].get());
+    m_focusStack.push(m_layers[0].get());
 }
 
 GUI::~GUI() {
-#ifdef USE_SDL
-    // destroy objects for clean lib deinit
-    m_mainFont.destroy();
-    m_renderer.destroy();
-    m_window.destroy();
-#endif
-    // destroy libraries
-    deinit();
-}
-
-void GUI::setFocus(ILayer* layer) noexcept {
-    // if not itself -> set focus 
-    if (!m_focusStack.empty() && m_focusStack.back() == layer)
-        return;
-    m_focusStack.push_back(layer);
-}
-
-void GUI::popFocus() noexcept {
-    if (!m_focusStack.empty())
-        m_focusStack.pop_back();
-}
-
-ILayer* GUI::getFocusedLayer() const noexcept {
-    return m_focusStack.empty() ? nullptr : m_focusStack.back();
+// #ifdef USE_SDL
+//     // destroy objects for clean lib deinit
+//     m_mainFont.destroy();
+//     m_renderer.destroy();
+// #endif
 }
 
 bool GUI::processEvents() {
     // convert lib event to internal event
-#ifdef USE_SDL
-    auto guiEvent = translateEvent(waitEvent());
-#elif USE_SFML
-    LibEvent libEv;
-    m_renderer.get().waitEvent(libEv);
-    auto guiEvent = translateEvent(libEv); 
-#endif
+    auto guiEvent = translateEvent(waitEvent(m_renderer.get()));
     if (!guiEvent) return true;
     
     return std::visit([&](auto&& ev) {
@@ -79,7 +50,7 @@ bool GUI::processEvents() {
                 if ((*it)->hitTest(ev.x, ev.y)) {
                     // set focus to this layer
                     target = it->get();
-                    setFocus(target);
+                    m_focusStack.push(target);
                     // let the layer consume the event
                     target->dispatchEvents(ev);
                     break;  
@@ -89,7 +60,7 @@ bool GUI::processEvents() {
         else if constexpr (std::is_same_v<T, MouseScrollingEvent>
                         || std::is_same_v<T, TextInputEvent>
                         || std::is_same_v<T, KeyUpEvent>) {
-            if (ILayer* layer = getFocusedLayer())
+            if (ILayer* layer = m_focusStack.top())
                 layer->dispatchEvents(ev);
         }
         
@@ -102,50 +73,36 @@ bool GUI::processEvents() {
 
 bool GUI::processRequests() {
     // fetch requests of the focused layer
-    auto req = getFocusedLayer()->readRequest();
-    if (!req) return false;
+    auto req = m_focusStack.top()->readRequest();
+    if (!req) return false; // no pending requests
     
-    // if layer requests destruction of itself
-    if (std::holds_alternative<MenuCloseRequest>(*req)
-        || std::holds_alternative<DialogCloseRequest>(*req)
-        || std::holds_alternative<PopupCloseRequest>(*req)) {
-
-        // destroy layer
-        popFocus();
-        m_layers.pop_back();
-
-        // pass the final response of the destroyed layer to its caller
-        std::visit([&](auto&& closeReq) {
-            using T = std::decay_t<decltype(closeReq)>;
-            if constexpr (std::is_same_v<T, MenuCloseRequest>
-                    || std::is_same_v<T, DialogCloseRequest>
-                    || std::is_same_v<T, PopupCloseRequest>) {
-                if (closeReq.resp) 
-                    getFocusedLayer()->onResponse(std::move(*closeReq.resp));
-            }
-        }, std::move(*req));
-
-        // true == the layer that was given focus after the destruction of the
-        // previous focused layer may want to immediately leave a new requests
-        // after receiving previous layer's response, thus chain of requests.
-        // It allows gui to react to events instantly
-        return true;
+    auto status = LayerRequestProcessor::process(&*req);
+    switch(status) {
+        case LayerRequestProcessor::OperationStatus::LAYER_CREATED: { 
+            // XXX REQUEST IS __ MOVED FROM __ AT THIS POINT 
+            // false == a new layer that was created first must process events before 
+            // making requests, thus no chain of requests
+            return false;
+        }
+        case LayerRequestProcessor::OperationStatus::LAYER_DESTROYED: {
+            // pass the final response of the destroyed layer to its caller
+            std::visit([&](auto&& closeReq) {
+                using T = std::decay_t<decltype(closeReq)>;
+                if constexpr (std::is_same_v<T, MenuCloseRequest>
+                        || std::is_same_v<T, DialogCloseRequest>
+                        || std::is_same_v<T, PopupCloseRequest>) {
+                    if (closeReq.resp) 
+                        fstack.top()->onResponse(std::move(*closeReq.resp));
+                }
+            }, std::move(*req));
+            // true == the layer that was given focus after the destruction of the
+            // previous focused layer may want to immediately leave a new request
+            // after receiving previous layer's response, thus chain of requests.
+            // It allows gui to react to events instantly
+            return true;
+        }
+        default: return false; // unknown status; so far, no point to care
     }
-
-    // if a layer 
-    if (auto* menuReq = std::get_if<MenuCreateRequest>(&*req)) {
-        m_layers.push_back(std::make_unique
-                <Layer<Widget, EmptyHandlerContext, MenuCreateRequest, MenuInteractor>>(std::move(*menuReq)));
-    } else if (auto* dialogReq = std::get_if<DialogCreateRequest>(&*req)) {
-        m_layers.push_back(std::make_unique
-                <Layer<Widget, EmptyHandlerContext, DialogCreateRequest, DialogInteractor>>(std::move(*dialogReq)));
-    } else if (auto* popupReq = std::get_if<PopupCreateRequest>(&*req)) {
-        m_layers.push_back(std::make_unique
-                <Layer<Widget, EmptyHandlerContext, PopupCreateRequest, PopupInteractor>>(std::move(*popupReq)));
-    } 
-    // false == a new layer that was created first must process events before 
-    // making requests, thus no chain of requests
-    return false;
 }
 
 void GUI::update() {

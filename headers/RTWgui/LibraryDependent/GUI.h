@@ -1,11 +1,11 @@
 #ifndef GUI_H
 #define GUI_H
+
+#include "RTWgui/LibraryDependent/LibraryLifetime.h"
 #include "RTWgui/LibraryDependent/Renderer.h"
-#include "RTWgui/LibraryDependent/Window.h"
-#include <vector>
+#include "RTWgui/LayerFocusStack.h"
 #include <memory>
 
-class ILayer;
 
 // The main GUI manager class 
 // * initializes and destroys libraries 
@@ -26,18 +26,7 @@ public:
         static GUI gui;
         return gui;
     }
-
-    static bool init() {
-        #ifdef USE_SDL 
-            constexpr SDL_InitFlags SDL_FLAGS = SDL_INIT_VIDEO;         
-            return SDL_Init(SDL_FLAGS) && TTF_Init();
-        #elif USE_SFML 
-            return true;  
-        #else
-            return false;
-        #endif
-    }
-
+    
     // process application events and dispatch them to layers 
     bool processEvents();
     // updates application layers 
@@ -46,31 +35,16 @@ public:
     void draw() const;
 private:
     GUI();
-    
-    static void deinit() {
-        #ifdef USE_SDL
-            TTF_Quit();
-            SDL_Quit();
-        #endif
-    }
-
+   
     // process layer requests
     bool processRequests();
     
-    // layer focus handling
-    void setFocus(ILayer*) noexcept;
-    void popFocus() noexcept;
-    ILayer* getFocusedLayer() const noexcept;
-    
     // z-depth array of layers [bottom->top]
-    std::vector<std::unique_ptr<ILayer>> m_layers; 
+    LayerOwningArray m_layers; 
     // non owning focus stack of layers
-    std::vector<ILayer*> m_focusStack; 
-    #ifdef USE_SDL
-    // main window
-    Window m_window;
-    #endif // USE_SDL
-
+    LayerFocusStack m_focusStack;
+    // library lifetime controller
+    LibraryLifetime m_libLT;
     // main renderer
     Renderer m_renderer;
     // main font

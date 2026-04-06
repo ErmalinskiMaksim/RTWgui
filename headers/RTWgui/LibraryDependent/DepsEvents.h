@@ -1,12 +1,12 @@
 #ifndef DEPS_EVENTS_H
 #define DEPS_EVENTS_H
 
+#include "RTWgui/LibraryDependent/DepsRendering.h"
+
 #ifdef USE_SDL
 
-#include "SDL3/SDL_events.h"
-
 using LibEvent = SDL_Event;
-inline LibEvent waitEvent() {
+inline LibEvent waitEvent(RendererPtrType) {
     LibEvent ev;
     SDL_WaitEvent(&ev);
     return ev;
@@ -159,6 +159,12 @@ using TextType = const char*;
 #include "SFML/Window/Event.hpp"
 
 using LibEvent = sf::Event;
+inline LibEvent waitEvent(RendererPtrType renderer) {
+    LibEvent ev;
+    renderer->waitEvent(ev);
+    return ev;
+}
+
 inline auto GetMouseState(float* x, float* y) {
     auto pos = sf::Mouse::getPosition();
     *x = static_cast<float>(pos.x);

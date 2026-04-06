@@ -1,17 +1,29 @@
 #include "RTWgui/LibraryDependent/Renderer.h"
 
 #ifdef USE_SDL
-Renderer::Renderer(WindowPtrType window) 
-    : m_renderer{SDL_CreateRenderer(window, nullptr), SDL_DestroyRenderer}
+Renderer::Renderer(std::string_view windowTitle, unsigned width, unsigned height) 
+    : m_window{SDL_CreateWindow(windowTitle.data(), width, height, 0), SDL_DestroyWindow}
+    , m_renderer{SDL_CreateRenderer(m_window.get(), nullptr), SDL_DestroyRenderer}
 {
+    if (!m_window) {
+        SDL_Log("Error creating a window: %s", SDL_GetError());
+        throw;
+    }
+    
     if (!m_renderer) {
         SDL_Log("Error creating a renderer: %s", SDL_GetError());
         throw;
     }
+    
+    // allow the typing
+    SDL_StartTextInput(m_window.get());
+
 }
 
 void Renderer::destroy() {
     m_renderer.reset();
+    m_window.reset();
+    SDL_StopTextInput(m_window.get());
 }
 
 RendererPtrType Renderer::get() const noexcept {

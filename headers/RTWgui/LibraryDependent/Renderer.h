@@ -6,7 +6,7 @@
 #ifdef USE_SDL
 class Renderer {
 public:
-    Renderer(WindowPtrType);
+    Renderer(std::string_view, unsigned, unsigned);
     Renderer(Renderer&&) = delete;
     Renderer& operator=(Renderer&&) = delete;
 
@@ -29,6 +29,7 @@ public:
     void resetBlendMode() const;
     
 private: 
+    WindowType m_window;
     mutable RendererType m_renderer;
 };
 
