@@ -32,6 +32,7 @@ bool GUI::processEvents() {
                         || std::is_same_v<T, MouseMotionEvent>) {
             // find a target layer that must consume the event and quit
             ILayer* target = nullptr;
+            // search in reverse order (from the top of z-stack to the bottom)
             for (auto it = m_layers.rbegin(); it != m_layers.rend(); ++it) {
                 // event consumption is hit test based
                 if ((*it)->hitTest(ev.x, ev.y)) {

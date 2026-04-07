@@ -3,7 +3,8 @@
 
 #include <functional>
 
-// position format used inside the DataStorage
+// a class that is used internally in widgets to determine a descrete
+// position of a widget component (e.g. a cell in a table)
 struct Pos {
     size_t col;
     size_t row;
@@ -13,8 +14,6 @@ struct Pos {
     }
 };
 
-// a hash function used in DataStorage to enable 
-// Pos type to be a key in a hash map
 namespace std {
     template<>
     struct hash<Pos> {

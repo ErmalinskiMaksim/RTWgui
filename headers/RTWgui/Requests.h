@@ -15,9 +15,18 @@
 //
 // They follow the same pattern: 
 // * create requests contain everything necessary to construct
-// a new layer
+//   a new layer
 // * close requests contain a response from the layer that 
-// requests to be destroyed
+//   requests to be destroyed
+//
+// Structure:
+// * create requests all have an internal Payload struct to unify the
+//   interface of creating them. It may contain different context-specific
+//   objects. Widget is obligatory for them though
+// * close requests all have a response inside. It's a unified way of
+//   communicating the last message that a layer wants to send (e.g. a menu 
+//   communicates the action that user chose; a dialog communicates the 
+//   text input that user has entered). 
 
 struct NonModalLayerCreateRequest {
     Widget widget;
@@ -26,24 +35,26 @@ struct NonModalLayerCreateRequest {
 
 struct MenuCreateRequest {
     struct Payload {
-        struct MenuAction {
+        struct MenuAction { // entry: (action name; action ID)
             std::string_view text;
             ActionID id;
         };
-        std::vector<MenuAction> entries;
+        std::vector<MenuAction> entries; // menu entries
     };
     Widget widget;
     Payload payload;
 };
 
 struct MenuCloseRequest {
-    std::optional<MenuResponse> resp;    
+    std::optional<MenuResponse> resp; 
 };
 
 struct DialogCreateRequest {
     struct Payload {
         std::optional<std::string_view> title;
-        std::optional<std::string_view> initInput;
+        // text that a dialog has in the input field before 
+        // user provides any input
+        std::optional<std::string_view> initInput; 
         uint8_t maxInputLen;
     };
     Widget widget;
@@ -56,6 +67,7 @@ struct DialogCloseRequest {
 
 struct PopupCreateRequest {
     struct Payload {
+        // text of a pop-up formatted as lines
         std::vector<std::string_view> lines;
     };
     Widget widget;
@@ -86,6 +98,7 @@ concept RequestType = std::is_same_v<T, NonModalLayerCreateRequest>
                     || std::is_same_v<T, PopupCloseRequest>
                     ;
 
+// a concept that is used in layer construction 
 template<typename T>
 concept CreateRequestType = std::is_same_v<T, NonModalLayerCreateRequest>
                         || std::is_same_v<T, MenuCreateRequest>

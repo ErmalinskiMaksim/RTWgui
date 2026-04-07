@@ -15,8 +15,6 @@ class TaskBarInteractor : public Interactor {
     using TaskNames = std::array<std::string_view, sizeof...(Handlers)>; 
     using Buttons = std::array<Rect, sizeof...(Handlers)>;
 public:
-    static constexpr bool hasOperations = false;
-
     TaskBarInteractor(NonModalLayerCreateRequest::Payload&&, WidgetView widget, RequestView req) 
     : m_tasks{Handlers::getID()...}
     , m_buttons{}

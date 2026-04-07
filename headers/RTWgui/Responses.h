@@ -16,18 +16,22 @@
 using ActionID = uint8_t;
 
 struct MenuResponse {
+    // menu action ID that user chose
     ActionID code;
 };
 
 struct DialogResponse {
-    std::string text;
+    // final text that user entered
+    std::string text; 
 };
 
 struct PopupResponse {};
+
 template<typename T>
 concept ResponseType = std::is_same_v<T, MenuResponse>
                     || std::is_same_v<T, DialogResponse>
                     || std::is_same_v<T, PopupResponse>;
+
 using Responses = std::variant<MenuResponse
                     , DialogResponse
                     , PopupResponse>;

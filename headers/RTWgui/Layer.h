@@ -3,6 +3,15 @@
 
 #include "RTWgui/ILayer.h"
 #include "RTWgui/Handlers.h"
+#include "RTWgui/Interactors/Interactor.h"
+
+template<typename T>
+concept InteractorWithOperation = 
+        std::is_base_of_v<Interactor, T>
+        && requires (T t) {
+            { t.getOperation() };
+            { t.processOperation() } -> std::same_as<void>;
+        };
 
 template<WidgetType MainWidget
         , typename HandlerContext
@@ -37,24 +46,19 @@ public:
     // dispatch responses to a correct action handler
     void onResponse(Responses&& resp) override {
         if constexpr (std::is_same_v<CreateRequest, NonModalLayerCreateRequest>) {
-            if constexpr (InteractorType::hasOperations) {
-                std::apply([&](auto&... handlers) {
-                    m_dispatcher.dispatch(
-                        std::move(resp)
-                        , HandlerContext{ std::ref(m_widget), std::ref(m_pendingRequest), m_interactor.getOperation()}
-                        , handlers...
-                        );
-                    }, m_handlers);
-                    m_interactor.processOperation();
-                } else {
-                    std::apply([&](auto&... handlers) {
-                    m_dispatcher.dispatch(
-                        std::move(resp)
-                        , HandlerContext{ std::ref(m_widget), std::ref(m_pendingRequest)}
-                        , handlers...
-                        );
-                    }, m_handlers);
-            }
+            std::apply([&](auto&... handlers) {
+                m_dispatcher.dispatch(
+                    std::move(resp)
+                    , [&]() noexcept {
+                        if constexpr (InteractorWithOperation<InteractorType>) 
+                            return HandlerContext{ std::ref(m_widget), std::ref(m_pendingRequest)
+                                                , m_interactor.getOperation()};
+                        else return HandlerContext{ std::ref(m_widget), std::ref(m_pendingRequest)};
+                        }()
+                    , handlers...
+                    );
+                }, m_handlers);
+            if constexpr (InteractorWithOperation<InteractorType>) m_interactor.processOperation();
         }
     }
 

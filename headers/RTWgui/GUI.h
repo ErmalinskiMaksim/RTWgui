@@ -8,11 +8,9 @@
 
 
 // The main GUI manager class 
-// * initializes and destroys libraries 
 // * owns windows, renderers, fonts and graphical layers
 // * dispatches events to layers in a centralized maner 
 // * allows for communication between layers via requests&responses
-// * deals with layer stack and determines focus
 class GUI {
 public:
     // singleton

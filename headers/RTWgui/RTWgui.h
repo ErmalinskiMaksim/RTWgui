@@ -4,6 +4,8 @@
 #include "RTWgui/GUI.h"
 
 // Main class
+// It exists separately from GUI to allow for alternative
+// interfaces in the future (like CLI)
 class RTWgui {
 public:
     // main loop 

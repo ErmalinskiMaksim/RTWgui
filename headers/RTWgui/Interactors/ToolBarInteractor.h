@@ -14,8 +14,6 @@ class ToolBarInteractor : public Interactor {
     template <std::size_t I>
     using Handler = std::tuple_element_t<I, std::tuple<Handlers...>>;
 public:
-    static constexpr bool hasOperations = false;
-
     ToolBarInteractor(NonModalLayerCreateRequest::Payload&&, WidgetView widget, RequestView req) 
     : m_tools{Handlers::getID()...}
     , m_buttons{}
