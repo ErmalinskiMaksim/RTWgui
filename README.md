@@ -7,14 +7,17 @@ This is small GUI framework that automates the run-of-the-mill GUI boilerplate l
 4. Event handling
 
 ## 2. What does it require?
-The main requirement is having two variables in the root CMakeLists:\
-```Root Project Directory:```\
-```|_ YourApp/```\
-```    |_...```
-```|_ ...```\
-```|_CMakeLists.txt # <- this one```\
+The main requirement is having two variables in the root CMakeLists:
+```bash
+    Root Project Directory:
+    |_ Project/
+        |_ ... 
+        |_ ...
+    |_ ...
+    |_CMakeLists.txt <-- this one
+```
 It requires *GUI_ENABLE_LTO* and *GRAPHICS_LIBRARY* (either **SDL** or **SFML**).\
-Example:\
+Example:
 
 ```CMake 
 # LTO
@@ -34,8 +37,8 @@ set_property(CACHE GRAPHICS_LIBRARY PROPERTY STRINGS SDL SFML)
 The framework contains several major modules:
 1. Widgets in *Widgets/*
 2. Interactors in *Interactors/*
-3. Some must have entities like Window, Renderer, Font, Main GUI supervisor, and redefinitions of external library types (SFML or SDL3)
-4. The other important components like Events, Requests, Responses, Layers
+3. Some entities like Renderer, Font, Texture, and redefinitions types that all depend on backend libraries (SFML or SDL3)
+4. Other important components like main GUI supervisor, Layers, Events, Requests, Responses, etc.
 ## 4. How to use it?
 In your main() just write:
 ```cpp 
@@ -50,7 +53,7 @@ int main() {
 }
 ```
 \
-To customize the GUI layout, you will *MUST* create an init.cpp file:
+To customize the GUI layout, you *MUST* create an init.cpp file:
 ```cpp 
 #include "Init.h"
 
@@ -66,7 +69,7 @@ const unsigned WINDOW_HEIGHT = ...;
 
 // Font
 const std::string_view MAIN_FONT_PATH = ...;
-const float MAIN_FONT_SZ = ...;
+const unsigned MAIN_FONT_SZ = ...;
 
 const size_t MAIN_LAYER_COUNT = ...; // must be > 0
 
@@ -78,8 +81,8 @@ void initializeLayers(LayerArray& layers, float mainFontCharWidth, float mainFon
 ```cpp 
  // task bar + tool bar example
     layers[0] = std::make_unique
-        <Layer<Widget, ToolBarInteractor, NonModalLayerCreateRequest
-        , .../*YOUR CUSTOM HANDLERS*/...>>(
+        <Layer<Widget, HandlerContext, NonModalLayerCreateRequest, ToolBarInteractor>
+                , /* YOUR CUSTOM HANDLER TYPES */>(
             NonModalLayerCreateRequest{
                 Widget {
                     Rect{0.0f, 0.05f * WINDOW_HEIGHT, WINDOW_WIDTH, 0.15f * WINDOW_HEIGHT}
@@ -87,13 +90,14 @@ void initializeLayers(LayerArray& layers, float mainFontCharWidth, float mainFon
                     , Color{0xBB, 0xBB, 0xBB, 0xFF}
                     , mainFontCharWidth
                     , mainFontCharHeight
-                }, NonModalLayerCreateRequest::Payload{}}); 
-            , /* YourCustomHandler1{}*/
-            , /* YourCustomHandler2{}*/
-            , /*... YourCustomHandlerN{}*/);
+                }, NonModalLayerCreateRequest::Payload{}}
+                , /* YourCustomHandler1{}*/
+                , /* YourCustomHandler2{}*/
+                , ..............
+            ); 
     layers[1] = std::make_unique
-        <Layer<Widget, TaskBarInteractor, NonModalLayerCreateRequest
-        , .../*YOUR CUSTOM HANDLERS*/...>>(
+        <Layer<Widget, HandlerContext, NonModalLayerCreateRequest, TaskBarInteractor
+        , /* YOUR CUSTOM HANDLER TYPES */>>(
             NonModalLayerCreateRequest{
                 Widget {
                     Rect{0.0f, 0.0f, WINDOW_WIDTH, 0.05f * WINDOW_HEIGHT}
@@ -102,9 +106,10 @@ void initializeLayers(LayerArray& layers, float mainFontCharWidth, float mainFon
                     , mainFontCharWidth
                     , mainFontCharHeight
                 }, NonModalLayerCreateRequest::Payload{}}
-            , /* YourCustomHandler1{}*/
-            , /* YourCustomHandler2{}*/
-            , /*... YourCustomHandlerN{}*/);
+                , /* YourCustomHandler1{}*/
+                , /* YourCustomHandler2{}*/
+                , ..............            
+            );
 
 ```
 ### Break down of components
@@ -126,6 +131,7 @@ template<WidgetType MainWidget, ResponseHandler... Handlers>
 class CustomInteractor{
 public:
     void dispatchEvents(const LayerEvent& event);
+    void update();
     void render(const Renderer& renderer, const Font& font) const;
     static constexpr bool hasOperations;
 
@@ -138,10 +144,10 @@ private:
     WidgetView r_widget;
     RequestView r_pendingRequest;
     // when hasOperation = true;
-    OperationRegister CustomInteractor::m_operation;
+    OperationRegister m_operation;
 };
 ```  
 3. Handlers 
 You can inspect the *headers/Handlers.h* file, there is a corresponding concept that outlines the requirements.
 ## 5. Project examples
-See a [spreadsheets](https://github.com/ErmalinskiMaksim/Spreadsheets-plus-plus) application powered by this framework.
+See [spreadsheets](https://github.com/ErmalinskiMaksim/Spreadsheets-plus-plus) and [chess](https://github.com/ErmalinskiMaksim/Chess-Refined) applications powered by this framework.

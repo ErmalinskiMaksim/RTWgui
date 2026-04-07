@@ -1,7 +1,7 @@
 #ifndef RTW_GUI_H 
 #define RTW_GUI_H
 
-#include "RTWgui/LibraryDependent/GUI.h"
+#include "RTWgui/GUI.h"
 
 // Main class
 class RTWgui {

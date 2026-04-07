@@ -1,4 +1,4 @@
-#include "RTWgui/LibraryDependent/GUI.h"
+#include "RTWgui/GUI.h"
 // init
 #include "RTWgui/Init.h"
 
@@ -6,7 +6,7 @@ GUI::GUI() : m_layers(MAIN_LAYER_COUNT)
             , m_focusStack{}
             , m_libLT{}
             , m_renderer{WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT}
-            , m_mainFont{MAIN_FONT_PATH, static_cast<unsigned>(MAIN_FONT_SZ), m_renderer.get()}
+            , m_mainFont{MAIN_FONT_PATH, MAIN_FONT_SZ, m_renderer.get()}
 {
     // initialize the layers in the ascending order
     initializeLayers(m_layers, m_mainFont.getCharacterWidth(), m_mainFont.getCharacterHeight());
