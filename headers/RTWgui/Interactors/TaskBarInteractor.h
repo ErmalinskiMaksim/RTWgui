@@ -30,8 +30,8 @@ public:
     }
 
     void dispatchEvents(const LayerEvent& event) 
-        noexcept(noexcept(std::visit([&](auto&& ev) { processEvents(ev); }, 
-            std::declval<const LayerEvent&>())))
+        // noexcept(noexcept(std::visit([this](auto&& ev) { processEvents(ev); }, 
+        //     std::declval<const LayerEvent&>())))
     {
         std::visit([&](auto&& ev) { processEvents(ev); }, event);
     }

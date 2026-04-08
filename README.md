@@ -33,6 +33,7 @@ endif()
 set(GRAPHICS_LIBRARY "SDL" CACHE STRING "Graphics backend: SDL or SFML")
 set_property(CACHE GRAPHICS_LIBRARY PROPERTY STRINGS SDL SFML)
 ```
+To build the framework with tests, make sure ENABLE_TESTS=ON.
 ## 3. Composition
 The framework contains several major modules:
 1. Widgets in *Widgets/*
