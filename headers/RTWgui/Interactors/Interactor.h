@@ -6,7 +6,7 @@
 class Interactor {
 protected:
     template<LayerEventType Event>
-    inline void processEvents(const Event&) {}
+    inline void processEvents(const Event&) noexcept {}
 };
 
 #endif

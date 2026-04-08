@@ -1,6 +1,11 @@
 #include "RTWgui/LibraryDependent/Renderer.h"
 
 #ifdef USE_SDL
+
+#ifdef USE_TEST
+Renderer::Renderer() : m_window{nullptr, SDL_DestroyWindow}, m_renderer{nullptr, SDL_DestroyRenderer}{}
+#endif
+
 Renderer::Renderer(std::string_view windowTitle, unsigned width, unsigned height) 
     : m_window{SDL_CreateWindow(windowTitle.data(), width, height, 0), SDL_DestroyWindow}
     , m_renderer{SDL_CreateRenderer(m_window.get(), nullptr), SDL_DestroyRenderer}
@@ -28,22 +33,22 @@ RendererPtrType Renderer::get() const noexcept {
     return m_renderer.get();
 }
 
-void Renderer::renderLines(const Point* points, int count, Color4 lineColor) const {
+void Renderer::renderLines(const Point* points, int count, Color4 lineColor) const noexcept {
     SDL_SetRenderDrawColor(m_renderer.get(), lineColor.r, lineColor.g, lineColor.b, lineColor.a);
     SDL_RenderLines(m_renderer.get(), points, count);
 }
 
-void Renderer::renderFillRect(const Rect* const rect, Color4 fillColor) const {
+void Renderer::renderFillRect(const Rect* const rect, Color4 fillColor) const noexcept {
     SDL_SetRenderDrawColor(m_renderer.get(), fillColor.r, fillColor.g, fillColor.b, fillColor.a);
     SDL_RenderFillRect(m_renderer.get(), rect);
 }
 
-void Renderer::renderRect(const Rect* const rect, Color4 outlineColor) const {
+void Renderer::renderRect(const Rect* const rect, Color4 outlineColor) const noexcept {
     SDL_SetRenderDrawColor(m_renderer.get(), outlineColor.r, outlineColor.g, outlineColor.b, outlineColor.a);
     SDL_RenderRect(m_renderer.get(), rect);
 }
 
-void Renderer::renderText(const Font& font, Rect dest, std::string_view txt) const {
+void Renderer::renderText(const Font& font, Rect dest, std::string_view txt) const noexcept {
     auto w = font.getCharacterWidth();
     auto h = font.getCharacterHeight();
     Rect srcRect{0.0f, 0.0f, w, h};
@@ -60,32 +65,32 @@ void Renderer::renderText(const Font& font, Rect dest, std::string_view txt) con
     }
 }
 
-void Renderer::renderTexture(TexturePtrType texture, const Rect* src, const Rect* dest) const {
+void Renderer::renderTexture(TexturePtrType texture, const Rect* src, const Rect* dest) const noexcept {
     SDL_RenderTexture(m_renderer.get(), texture, src, dest);
 }
 
-void Renderer::clear(Color4 c) const {
+void Renderer::clear(Color4 c) const noexcept {
     SDL_SetRenderDrawColor(m_renderer.get(), c.r, c.g, c.b, c.a);
     SDL_RenderClear(m_renderer.get());
 }
 
-void Renderer::present() const {
+void Renderer::present() const noexcept {
     SDL_RenderPresent(m_renderer.get());
 }
 
-void Renderer::setTarget(TexturePtrType target) const {
+void Renderer::setTarget(TexturePtrType target) const noexcept {
     SDL_SetRenderTarget(m_renderer.get(), target);
 }
 
-void Renderer::setTarget() const {
+void Renderer::setTarget() const noexcept {
     SDL_SetRenderTarget(m_renderer.get(), nullptr);
 }
 
-void Renderer::setBlendMode() const {
+void Renderer::setBlendMode() const noexcept {
     SDL_SetRenderDrawBlendMode(m_renderer.get(), SDL_BLENDMODE_BLEND);
 }
 
-void Renderer::resetBlendMode() const {
+void Renderer::resetBlendMode() const noexcept {
     SDL_SetRenderDrawBlendMode(m_renderer.get(), SDL_BLENDMODE_NONE);
 }
 

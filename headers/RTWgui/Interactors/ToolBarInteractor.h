@@ -8,13 +8,13 @@
 
 struct Icon{};
 
-template<WidgetType MainWidget, typename HandlerContext, typename... Handlers>
+template<WidgetType MainWidget, HandlerContextType HandlerContext, typename... Handlers>
 class ToolBarInteractor : public Interactor {
     using WidgetView = std::reference_wrapper<MainWidget>;
     template <std::size_t I>
     using Handler = std::tuple_element_t<I, std::tuple<Handlers...>>;
 public:
-    ToolBarInteractor(NonModalLayerCreateRequest::Payload&&, WidgetView widget, RequestView req) 
+    ToolBarInteractor(NonModalLayerCreateRequest::Payload&&, WidgetView widget, RequestView req) noexcept
     : m_tools{Handlers::getID()...}
     , m_buttons{}
     , r_widget{widget}
@@ -25,13 +25,9 @@ public:
         std::visit([&](auto&& ev) { processEvents(ev); }, event);
     }
 
-    void update() {
+    void update() const noexcept {}
 
-    }
-
-    void render(const Renderer&, const Font&) const {
-        // render button icons 
-    }
+    void render(const Renderer&, const Font&) const noexcept {}
 private:
     using Interactor::processEvents;
     void processEvents(const MouseLeftDownEvent& event) {

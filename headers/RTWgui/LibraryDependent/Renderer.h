@@ -6,6 +6,9 @@
 #ifdef USE_SDL
 class Renderer {
 public:
+    #ifdef USE_TEST
+    Renderer(); 
+    #endif
     Renderer(std::string_view, unsigned, unsigned);
     Renderer(Renderer&&) = delete;
     Renderer& operator=(Renderer&&) = delete;
@@ -13,20 +16,20 @@ public:
 
     RendererPtrType get() const noexcept;
 
-    void renderLines(const Point*, int, Color4) const;
-    void renderFillRect(const Rect* const, Color4) const;
-    void renderRect(const Rect* const, Color4) const;    
-    void renderText(const Font&, Rect, std::string_view) const;
-    void renderTexture(TexturePtrType, const Rect*, const Rect*) const;
+    void renderLines(const Point*, int, Color4) const noexcept;
+    void renderFillRect(const Rect* const, Color4) const noexcept;
+    void renderRect(const Rect* const, Color4) const noexcept;    
+    void renderText(const Font&, Rect, std::string_view) const noexcept;
+    void renderTexture(TexturePtrType, const Rect*, const Rect*) const noexcept;
 
-    void clear(Color4) const;
-    void present() const;
+    void clear(Color4) const noexcept;
+    void present() const noexcept;
 
-    void setTarget(TexturePtrType) const;
-    void setTarget() const;
+    void setTarget(TexturePtrType) const noexcept;
+    void setTarget() const noexcept; 
 
-    void setBlendMode() const;
-    void resetBlendMode() const;
+    void setBlendMode() const noexcept;
+    void resetBlendMode() const noexcept;
     
 private: 
     WindowType m_window;
@@ -45,6 +48,9 @@ struct Rect {
 
 class Renderer {
 public:
+    #ifdef 
+    Renderer() = default; 
+    #endif // 
     Renderer(std::string_view, unsigned, unsigned);
     Renderer(Renderer&&) = delete;
     Renderer& operator=(Renderer&&) = delete;

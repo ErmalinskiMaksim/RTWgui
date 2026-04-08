@@ -4,12 +4,12 @@
 #include "RTWgui/Interactors/Interactor.h"
 #include "RTWgui/Requests.h"
 
-template<WidgetType MainWidget, typename Context>
+template<WidgetType MainWidget, HandlerContextType Context>
 class MenuInteractor : public Interactor {
     using WidgetView = std::reference_wrapper<MainWidget>;
     using Entries = std::vector<MenuCreateRequest::Payload::MenuAction>;
 public:
-    MenuInteractor(MenuCreateRequest::Payload&& payload, WidgetView widget, RequestView req) 
+    MenuInteractor(MenuCreateRequest::Payload&& payload, WidgetView widget, RequestView req) noexcept
     : m_entries{std::move(payload.entries)}
     , r_widget{widget}
     , r_pendingRequest{req}
@@ -19,9 +19,7 @@ public:
         std::visit([&](auto&& ev) { processEvents(ev); }, event);
     }
 
-    void update() {
-
-    }
+    void update() const noexcept{}
 
     void render(const Renderer& renderer, const Font& font) const {
         auto hbox = r_widget.get().getHitBox();

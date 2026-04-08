@@ -3,6 +3,14 @@
 
 #include "RTWgui/Requests.h"
 
+// handler context concept for layers:
+struct EmptyHandlerContext{};
+template<typename Ctx>
+concept HandlerContextType = requires(Ctx ctx) {
+    { ctx.widget } -> std::convertible_to<std::reference_wrapper<const Widget>>;
+    { ctx.req } -> std::convertible_to<RequestView>;
+} || std::is_same_v<Ctx, EmptyHandlerContext>;
+
 // Minimum requirements for a custom handler
 template<typename Ctx, typename H, typename R>
 concept CanHandleResponse =
@@ -25,10 +33,10 @@ concept CanHandleResponse =
         { H::requestMainMenu(ctx) } -> std::same_as<bool>;
     };
 
-template<typename Ctx, typename H, typename Variant>
+template<HandlerContextType Ctx, typename H, typename Variant>
 struct HandlesAny;
 
-template<typename Ctx, typename H, typename... Rs>
+template<HandlerContextType Ctx, typename H, typename... Rs>
 struct HandlesAny<Ctx, H, std::variant<Rs...>>
     : std::bool_constant<(CanHandleResponse<Ctx, H, Rs> || ...)> {};
 
@@ -43,7 +51,7 @@ concept ResponseHandlerFor = ResponseHandler<Ctx, H>;
 // This class is responsible for dispatching responses to a correct
 // action handler. To find an appropriate handler, it propagates the 
 // response until some handler signals that it caught it. 
-template<typename Ctx, typename... Handlers>
+template<HandlerContextType Ctx, typename... Handlers>
 // XXX to allow template response handlers
 requires (... && ResponseHandler<Ctx, Handlers>)
 struct ResponseDispatcher {
@@ -61,6 +69,6 @@ struct ResponseDispatcher {
 };
 
 // a stub for layers that do not need handler mechanism
-struct EmptyHandlerContext{};
 using EmptyResponseDispatcher = ResponseDispatcher<EmptyHandlerContext>;
+
 #endif 

@@ -4,11 +4,11 @@
 #include "RTWgui/Interactors/Interactor.h"
 #include "RTWgui/Requests.h"
 
-template<WidgetType MainWidget, typename Context>
+template<WidgetType MainWidget, HandlerContextType Context>
 class DialogInteractor : public Interactor {
     using WidgetView = std::reference_wrapper<MainWidget>;
 public:
-    DialogInteractor(DialogCreateRequest::Payload&& payload, WidgetView widget, RequestView req) 
+    DialogInteractor(DialogCreateRequest::Payload&& payload, WidgetView widget, RequestView req) noexcept
     : m_title{payload.title}
     , m_input{payload.initInput ? std::move(payload.initInput) : ""}
     , r_widget{widget}
@@ -20,9 +20,7 @@ public:
         std::visit([&](auto&& ev) { processEvents(ev); }, event);
     }
 
-    void update() {
-
-    }
+    void update() const noexcept {}
 
     void render(const Renderer& renderer, const Font& font) const {
         auto hbox = r_widget.get().getHitBox();

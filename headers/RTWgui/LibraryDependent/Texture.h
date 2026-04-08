@@ -7,7 +7,7 @@
 
 class Texture {
 public:
-    Texture();
+    Texture() noexcept;
     Texture(RendererPtrType, float, float);
     Texture(RendererPtrType, SurfacePtrType);
     Texture(RendererPtrType, std::string_view);

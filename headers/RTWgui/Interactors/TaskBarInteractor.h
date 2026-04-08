@@ -6,7 +6,7 @@
 #include <tuple>
 #include <array>
 
-template<WidgetType MainWidget, typename HandlerContext, typename... Handlers>
+template<WidgetType MainWidget, HandlerContextType HandlerContext, typename... Handlers>
 class TaskBarInteractor : public Interactor {
     using WidgetView = std::reference_wrapper<MainWidget>;
 
@@ -15,7 +15,7 @@ class TaskBarInteractor : public Interactor {
     using TaskNames = std::array<std::string_view, sizeof...(Handlers)>; 
     using Buttons = std::array<Rect, sizeof...(Handlers)>;
 public:
-    TaskBarInteractor(NonModalLayerCreateRequest::Payload&&, WidgetView widget, RequestView req) 
+    TaskBarInteractor(NonModalLayerCreateRequest::Payload&&, WidgetView widget, RequestView req) noexcept 
     : m_tasks{Handlers::getID()...}
     , m_buttons{}
     , r_widget{widget}
@@ -29,27 +29,39 @@ public:
         }
     }
 
-    void dispatchEvents(const LayerEvent& event) {
+    void dispatchEvents(const LayerEvent& event) 
+        noexcept(noexcept(std::visit([&](auto&& ev) { processEvents(ev); }, 
+            std::declval<const LayerEvent&>())))
+    {
         std::visit([&](auto&& ev) { processEvents(ev); }, event);
     }
 
-    void update() {
+    void update() const noexcept {}
 
-    }
-    
-    void render(const Renderer& renderer, const Font& font) const {
+    void render(const Renderer& renderer, const Font& font) const 
+        noexcept(noexcept(std::declval<const Renderer&>().renderText(
+            std::declval<const Font&>(),
+            std::declval<const Rect&>(),
+            std::declval<const std::string_view&>())))
+    {
         // render button text
         for (auto i = 0uz; i < m_tasks.size(); ++i) 
             renderer.renderText(font, m_buttons[i], m_tasks[i]);
     }
 private:
     using Interactor::processEvents;
-    void processEvents(const MouseLeftDownEvent& event) {
+    void processEvents(const MouseLeftDownEvent& event) 
+        noexcept(noexcept(processImpl(event, std::make_index_sequence<sizeof...(Handlers)>{})))
+    {
         processImpl(event, std::make_index_sequence<sizeof...(Handlers)>{});
     }
     
     template<size_t... Is>
-    void processImpl(const MouseLeftDownEvent& event, std::index_sequence<Is...>) {
+    void processImpl(const MouseLeftDownEvent& event, std::index_sequence<Is...>) 
+        // TODO 
+        // noexcept((noexcept(Widget::contains(std::declval<float>(), std::declval<float>(), std::declval<Rect>()))
+        //         && noexcept(Handler<Is>::requestMainMenu(std::declval<HandlerContext>()))) && ...)
+    {
         ((Widget::contains(event.x, event.y, m_buttons[Is]) &&
           Handler<Is>::requestMainMenu(
               HandlerContext{r_widget.get(), r_pendingRequest})

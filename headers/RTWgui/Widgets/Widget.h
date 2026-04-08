@@ -30,7 +30,7 @@ public:
            , Color fillColor = {0xFF, 0xFF, 0xFF, 0xFF}
            , Color outlineColor = {0x00, 0x00, 0x00, 0x00}
            , float charWidth = 0.0f, float charHeight = 0.0f
-        );
+        ) noexcept;
 
     constexpr bool contains(float x, float y) const noexcept {
         return (x > m_hitBox.x && x <= m_hitBox.x + m_hitBox.w) 

@@ -30,7 +30,9 @@
 
 struct NonModalLayerCreateRequest {
     Widget widget;
-    struct Payload{} payload;
+    struct Payload{
+        void* ctx = nullptr; // type-erased context
+    } payload;
 };
 
 struct MenuCreateRequest {

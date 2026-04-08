@@ -2,7 +2,7 @@
 
 #ifdef USE_SDL
 
-Texture::Texture() 
+Texture::Texture() noexcept
     : m_texture{nullptr, SDL_DestroyTexture}
 {}
 

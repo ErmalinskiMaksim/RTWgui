@@ -7,6 +7,9 @@
 #ifdef USE_SDL
 class Font {
 public:
+    #ifdef USE_TEST
+    Font(); 
+    #endif
     Font(std::string_view, unsigned, RendererPtrType);
     Font(Font&&) = delete;
     Font& operator=(Font&&) = delete;
@@ -24,6 +27,9 @@ private:
 
 class Font {
 public:
+    #ifdef 
+    Font() = default;
+    #endif
     Font(std::string_view, unsigned, RendererViewType );
 
     float getCharacterWidth() const;

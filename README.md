@@ -1,7 +1,7 @@
 # Reinvent-The-Wheel gui (RTWgui)
 ## 1. Description
 This is small GUI framework that automates the run-of-the-mill GUI boilerplate like:
-1. C++ GUI library APIs (SFML and SDL3+SDL3_TTF) at the moment
+1. C++ GUI library APIs (SFML and SDL3+SDL3_TTF+SDL3_IMG) at the moment
 2. Layer logic (creation of layers, intercommunication, etc.)
 3. Some basic widgets (menus, dialogs, pop-ups, taskbars, toolbars)
 4. Event handling
@@ -127,23 +127,30 @@ In the previous example, you could observe the creation of a tool bar and a task
 1. Widgets: to make a custom widget, derive it from RTWgui's Widget
 2. Interactors: for the reference, look at *headers/Layer.h* and *Interactors/* directory. In a nutshell, a custom Interactor must have: 
 ```cpp
-template<WidgetType MainWidget, ResponseHandler... Handlers>
+
+template<typename T>
+concept InteractorWithOperation = 
+        std::is_base_of_v<Interactor, T>
+        && requires (T t) {
+            { t.getOperation() };
+            { t.processOperation() } -> std::same_as<void>;
+        };
+
+template<WidgetType MainWidget, HandlerContextType HandlerContext, ResponseHandler... Handlers>
 class CustomInteractor{
 public:
     void dispatchEvents(const LayerEvent& event);
     void update();
     void render(const Renderer& renderer, const Font& font) const;
-    static constexpr bool hasOperations;
 
-    // for non-modal layers whose hasOperation = true
+    // Optional operation functionality.
     // Example, when it's useful:
-    // A spreadsheets interctor. When the user clicks on the label space, a menu appears with "insert/delete column/row". The result of this operation must be returned back to the caller and be concumed by some global entity
+    // A spreadsheets interctor. When the user clicks on the label space, a menu appears with "insert/delete column/row". The result of this operation must be returned back to the caller.
     OperationView getOperation();
     void processOperation();
 private:
     WidgetView r_widget;
     RequestView r_pendingRequest;
-    // when hasOperation = true;
     OperationRegister m_operation;
 };
 ```  

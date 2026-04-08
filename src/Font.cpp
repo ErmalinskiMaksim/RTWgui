@@ -1,6 +1,11 @@
 #include "RTWgui/LibraryDependent/Font.h"
 
 #ifdef USE_SDL
+
+#ifdef USE_TEST
+Font::Font() : m_font{nullptr, TTF_CloseFont}, m_glyphAtlas{} {}
+#endif
+
 Font::Font(std::string_view path, unsigned fontSz, RendererPtrType renderer)
     : m_font{TTF_OpenFont(path.data(), static_cast<float>(fontSz)), TTF_CloseFont}
     , m_glyphAtlas{}
@@ -46,6 +51,7 @@ float Font::getCharacterHeight() const noexcept {
 
 #elif USE_SFML
 #include <iostream>
+
 Font::Font(std::string_view path, unsigned fontSz, RendererViewType)
     : m_fontSize(fontSz) 
 {

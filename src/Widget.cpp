@@ -14,7 +14,7 @@ Color::operator Color4() const noexcept {
 }
 
 Widget::Widget(Rect&& hitBox, Color fillColor, Color outlineColor
-            , float charWidth, float charHeight) 
+            , float charWidth, float charHeight) noexcept
     : m_texture{}
     , m_hitBox(hitBox)
     , m_fillColor(fillColor)

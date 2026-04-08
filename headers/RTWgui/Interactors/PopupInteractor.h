@@ -4,12 +4,12 @@
 #include "RTWgui/Interactors/Interactor.h"
 #include "RTWgui/Requests.h"
 
-template<WidgetType MainWidget, typename Context>
+template<WidgetType MainWidget, HandlerContextType Context>
 class PopupInteractor : public Interactor {
     using WidgetView = std::reference_wrapper<MainWidget>;
     using TextLines = decltype(PopupCreateRequest::Payload::lines);
 public:
-    PopupInteractor(PopupCreateRequest::Payload&& payload, WidgetView widget, RequestView req) 
+    PopupInteractor(PopupCreateRequest::Payload&& payload, WidgetView widget, RequestView req) noexcept 
     : m_text{std::move(payload.lines)}
     , r_widget{widget}
     , r_pendingRequest{req}
@@ -19,9 +19,7 @@ public:
         std::visit([&](auto&& ev) { processEvents(ev); }, event);
     }
 
-    void update() {
-
-    }
+    void update() const noexcept {}
     
     void render(const Renderer& renderer, const Font& font) const {
         auto hbox = r_widget.get().getHitBox();

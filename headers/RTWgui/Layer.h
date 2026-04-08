@@ -14,9 +14,9 @@ concept InteractorWithOperation =
         };
 
 template<WidgetType MainWidget
-        , typename HandlerContext
+        , HandlerContextType HandlerContext
         , CreateRequestType CreateRequest
-        , template<WidgetType, typename, typename...> class Interactor
+        , template<WidgetType, HandlerContextType, typename...> class Interactor
         , typename... Handlers>
 requires (ResponseHandlerFor<HandlerContext, Handlers> && ...)
 class Layer final : public ILayer {
@@ -38,6 +38,9 @@ public:
         m_interactor.update();
     }
 
+    // Behavior:
+    // 1. allows widget to render first
+    // 2. allows interactor to render after widget
     void draw(const Renderer& renderer, const Font& font) const override {
         m_widget.render(renderer, font);
         m_interactor.render(renderer, font);

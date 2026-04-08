@@ -1,13 +1,20 @@
+cmake_minimum_required(VERSION 3.16)
+project(RTWgui LANGUAGES C CXX)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+enable_testing()
+
 add_library(RTWgui)
 include(cmake/dependencies.cmake)
 
+############## L I B R A R Y ########################
 target_compile_features(RTWgui PUBLIC cxx_std_23)
 target_compile_options(RTWgui  PRIVATE
     -Wstrict-aliasing
-    -Wall 
-    -Wextra 
+    -Wall
+    -Wextra
     -Werror
-    -Wpedantic 
+    -Wpedantic
     -Wwrite-strings
     -Wmissing-declarations
     -Wmissing-include-dirs
@@ -18,13 +25,13 @@ target_compile_options(RTWgui  PRIVATE
     -Wuninitialized
     -Wmisleading-indentation
     -Wshadow
-    -Wconversion 
+    -Wconversion
     -Wsign-compare
-    -Wswitch-default 
+    -Wswitch-default
     -Wundef
 )
 
-if (GUI_ENABLE_LTO)
+if(GUI_ENABLE_LTO)
     set_property(TARGET RTWgui PROPERTY
         INTERPROCEDURAL_OPTIMIZATION_RELEASE TRUE)
 endif()
@@ -59,3 +66,8 @@ target_include_directories(RTWgui
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/headers
 )
+
+############ T E S T S #######################
+if(ENABLE_TESTS)
+    add_subdirectory(tests)
+endif()
