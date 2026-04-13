@@ -11,6 +11,12 @@ inline LibEvent waitEvent(RendererPtrType) {
     SDL_WaitEvent(&ev);
     return ev;
 }
+
+inline void triggerQuitEvent() {
+    SDL_Event e;
+    e.type = SDL_EVENT_QUIT;
+    SDL_PushEvent(&e);
+}
  
 inline auto GetMouseState(float* x, float* y) {
     return SDL_GetMouseState(x, y);
@@ -164,6 +170,13 @@ inline LibEvent waitEvent(RendererViewType renderer) {
     renderer->waitEvent(ev);
     return ev;
 }
+
+// TODO:
+// inline void triggerQuitEvent() {
+//     sf::Event e;
+//     e.type = sf::Event::Closed;
+//     window.pushEvent(e);
+// }
 
 inline auto GetMouseState(float* x, float* y) {
     auto pos = sf::Mouse::getPosition();
